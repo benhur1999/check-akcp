@@ -1,0 +1,54 @@
+stages:
+    - build
+
+variables:
+  GO_BUILD_NAME: check_akcp
+
+.go:
+  image: golang:1.25-alpine
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+    GO_BIN_DIR: bin
+
+go_mod_download:
+  stage: .pre
+  extends:
+    - .go
+  needs: []
+  rules:
+    - exists:
+        - '**/go.sum'
+  before_script:
+    # Required since this is set as GOPATH
+    - mkdir -p .go
+  script:
+    - go mod download
+  cache:
+    key: ${CI_PROJECT_NAME}-go
+    paths:
+      - .go/pkg/mod/
+  artifacts:
+    paths:
+      - .go/pkg/mod/
+
+go_build:
+  stage: build
+  extends:
+    - .go
+  needs:
+    - job: go_mod_download
+      optional: true
+  variables:
+    #GO_BUILD_NAME: $CI_PROJECT_NAME
+    GO_MAIN_DIR: '.'
+  parallel:
+    matrix:
+      - TARGET_OS: 'linux'
+        TARGET_ARCH: ['amd64']
+  script:
+    - >
+      env GOOS=${TARGET_OS} GOARCH=${TARGET_ARCH}
+      go build -trimpath -ldflags "-s -w" -o ./${GO_BIN_DIR}/${GO_BUILD_NAME} $GO_MAIN_DIR
+  artifacts:
+    paths:
+      - ./${GO_BIN_DIR}/${GO_BUILD_NAME}*
