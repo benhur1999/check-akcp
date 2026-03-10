@@ -3,10 +3,9 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/benhur1999/check-akcp/internal/akcp/akcputil"
-	"github.com/olekukonko/tablewriter"
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -34,16 +33,27 @@ func runListSensorsCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	if len(sensors) > 0 {
-		table := tablewriter.NewTable(os.Stdout)
-		table.Header("SensorId", "Type", "Description")
+		col_type := 4
+		col_port := 4
+		col_desc := 4
 		for _, sensor := range sensors {
-			log.Debugf("Index: %s, Description: %s, Sensor Type: %s (%d)",
-				sensor.Index, sensor.Description, sensor.GetType(), sensor.SensorType)
-			table.Append([]string{
-				sensor.Index, sensor.GetType(), sensor.Description,
-			})
+			if len(sensor.GetType()) > col_type {
+				col_type = len(sensor.GetType())
+			}
+			if len(sensor.Index) > col_port {
+				col_port = len(sensor.Index)
+			}
+			if len(sensor.Description) > col_desc {
+				col_desc = len(sensor.Description)
+			}
 		}
-		table.Render()
+		f_str := fmt.Sprintf("%%-%ds | %%-%ds | %%-%ds\n", col_type, col_port, col_desc)
+		fmt.Printf("The following sensors are found:\n")
+		fmt.Printf(f_str, "Type", "Port", "Name")
+		fmt.Printf("%s+%s+%s\n", strings.Repeat("-", col_type+1), strings.Repeat("-", col_port+2), strings.Repeat("-", col_desc+1))
+		for _, sensor := range sensors {
+			fmt.Printf(f_str, sensor.GetType(), sensor.Index, sensor.Description)
+		}
 	} else {
 		fmt.Printf("No supported sensors found")
 		os.Exit(1)
