@@ -84,6 +84,7 @@ func init() {
 	pfs.BoolVarP(&config.Verbose, "verbose", "v", false, "Enable verbose mode")
 	pfs.BoolVar(&config.Perfdata, "perf-data", false, "Output performance data")
 	pfs.IntVarP(&config.Timeout, "timeout", "t", 30, "Abort the check after n seconds")
-	pfs.VarP(enumflag.New(&config.Model, "model", ConfigModelIds, enumflag.EnumCaseInsensitive), "model", "M", "Model [auto, ]")
+	pfs.VarP(enumflag.New(&config.Model, "model", ConfigModelIds, enumflag.EnumCaseInsensitive), "model", "M",
+		"Model [auto, sensorProbe, sensorProbePlus]")
 	rootCmd.Flags().SortFlags = false
 }

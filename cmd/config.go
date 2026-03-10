@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/NETWAYS/go-check"
+	"github.com/benhur1999/check-akcp/internal/akcp/akcputil"
 	"github.com/gosnmp/gosnmp"
 	log "github.com/sirupsen/logrus"
 	"github.com/thediveo/enumflag/v2"
@@ -20,7 +22,7 @@ const (
 var ConfigModelIds = map[ConfigModel][]string{
 	ConfigModelAutoDetect:      {"auto"},
 	ConfogModelSensorProbe:     {"sensorProbe"},
-	ConfogModelSensorProbePlus: {"sensorProbe+"},
+	ConfogModelSensorProbePlus: {"sensorProbePlus"},
 }
 
 var SnmpVersionIds = map[gosnmp.SnmpVersion][]string{
@@ -94,6 +96,19 @@ func validateGlobalArguments() {
 	// 	check.ExitRaw(check.Unknown, "SNMP version must be either \"1\", \"2c\" or \"3\"")
 	// }
 
+}
+
+func (c *Config) GetModel() akcputil.AkcpModel {
+	switch c.Model {
+	case ConfigModelAutoDetect:
+		return akcputil.AkcpModelAutoDetect
+	case ConfogModelSensorProbe:
+		return akcputil.AkcpModelSensorProbe
+	case ConfogModelSensorProbePlus:
+		return akcputil.AkcpModelSensorProbePlus
+	default:
+		panic(fmt.Sprintf("invalid config model: %d", c.Model))
+	}
 }
 
 func NewSnmpClient(connect bool) (*gosnmp.GoSNMP, error) {

@@ -49,7 +49,7 @@ func New(snmp *gosnmp.GoSNMP, model AkcpModel) (akcp.Akcp, error) {
 		if description == "" {
 			return nil, errors.New("Unable to fetch system description")
 		}
-		log.Tracef("Auto-detecting model from description: %s", description)
+		log.Debugf("Auto-detecting model from description: %s", description)
 		if strings.Contains(description, "sensorProbe") {
 			model = AkcpModelSensorProbe
 			if snmp.Version != gosnmp.Version1 {

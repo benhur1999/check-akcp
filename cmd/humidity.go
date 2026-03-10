@@ -34,7 +34,7 @@ func runHumidityCmd(cmd *cobra.Command, args []string) error {
 	}
 	defer snmp.Close()
 
-	m, err := akcputil.New(snmp, akcputil.AkcpModelAutoDetect)
+	m, err := akcputil.New(snmp, config.GetModel())
 	if err != nil {
 		return err
 	}
