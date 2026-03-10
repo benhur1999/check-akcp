@@ -15,14 +15,14 @@ type ConfigModel enumflag.Flag
 
 const (
 	ConfigModelAutoDetect ConfigModel = iota
-	ConfogModelSensorProbe
-	ConfogModelSensorProbePlus
+	ConfigModelSensorProbe
+	ConfigModelSensorProbePlus
 )
 
 var ConfigModelIds = map[ConfigModel][]string{
 	ConfigModelAutoDetect:      {"auto"},
-	ConfogModelSensorProbe:     {"sensorProbe"},
-	ConfogModelSensorProbePlus: {"sensorProbePlus"},
+	ConfigModelSensorProbe:     {"sensorProbe"},
+	ConfigModelSensorProbePlus: {"sensorProbePlus"},
 }
 
 var SnmpVersionIds = map[gosnmp.SnmpVersion][]string{
@@ -102,9 +102,9 @@ func (c *Config) GetModel() akcputil.AkcpModel {
 	switch c.Model {
 	case ConfigModelAutoDetect:
 		return akcputil.AkcpModelAutoDetect
-	case ConfogModelSensorProbe:
+	case ConfigModelSensorProbe:
 		return akcputil.AkcpModelSensorProbe
-	case ConfogModelSensorProbePlus:
+	case ConfigModelSensorProbePlus:
 		return akcputil.AkcpModelSensorProbePlus
 	default:
 		panic(fmt.Sprintf("invalid config model: %d", c.Model))
