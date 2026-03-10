@@ -1,6 +1,8 @@
 package akcp
 
-import "github.com/gosnmp/gosnmp"
+import (
+	"github.com/gosnmp/gosnmp"
+)
 
 type SensorStatus int64
 
@@ -224,6 +226,7 @@ type Akcp interface {
 	GetName() string
 	GetLocation() string
 	GetDescription() string
+	GetOverallSummaryLine() string
 	GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]TemperatureData, error)
 	GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort string) (*TemperatureData, error)
 	GetHumiditySensors(snmp *gosnmp.GoSNMP) ([]HumiditySensor, error)

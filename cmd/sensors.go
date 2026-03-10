@@ -63,7 +63,7 @@ func runAllSensorsCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	overall := result.Overall{
-		Summary: fmt.Sprintf("%s %s at location %s (%s)", m.GetModel(), m.GetName(), m.GetLocation(), m.GetDescription()),
+		Summary: m.GetOverallSummaryLine(),
 	}
 
 	if sensorCmdConfig.SelectedSensors&selectedSensorsTemperature > 0 {

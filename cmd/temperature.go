@@ -67,7 +67,7 @@ func runTemperatureCmd(cmd *cobra.Command, args []string) error {
 		check.ExitRaw(rc, output)
 	} else {
 		overall := result.Overall{
-			Summary: fmt.Sprintf("%s %s at location %s (%s)", m.GetModel(), m.GetName(), m.GetLocation(), m.GetDescription()),
+			Summary: m.GetOverallSummaryLine(),
 		}
 		err = processTemperatureSensors(m, snmp, &overall)
 		if err != nil {
