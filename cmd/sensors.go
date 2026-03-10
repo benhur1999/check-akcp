@@ -66,25 +66,36 @@ func runAllSensorsCmd(cmd *cobra.Command, args []string) error {
 		Summary: m.GetOverallSummaryLine(),
 	}
 
+	count := 0
 	if sensorCmdConfig.SelectedSensors&selectedSensorsTemperature > 0 {
-		err = processTemperatureSensors(m, snmp, &overall)
+		c, err := processTemperatureSensors(m, snmp, &overall)
 		if err != nil {
 			return nil
 		}
+		count += c
 	}
 
 	if sensorCmdConfig.SelectedSensors&selectedSensorsHumidity > 0 {
-		err = processHumiditySensors(m, snmp, &overall)
+		c, err := processHumiditySensors(m, snmp, &overall)
 		if err != nil {
 			return err
 		}
+		count += c
 	}
 
 	if sensorCmdConfig.SelectedSensors&selectedSensorsDryContacts > 0 {
-		err = processDryContacts(m, snmp, &overall)
+		c, err := processDryContacts(m, snmp, &overall)
 		if err != nil {
 			return err
 		}
+		count += c
+	}
+	if count == 0 {
+		sc := result.PartialResult{
+			Output: "No sensors found.",
+		}
+		sc.SetState(check.Unknown)
+		overall.AddSubcheck(sc)
 	}
 
 	check.ExitRaw(overall.GetStatus(), overall.GetOutput())

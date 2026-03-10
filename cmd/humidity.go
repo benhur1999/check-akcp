@@ -70,22 +70,29 @@ func runHumidityCmd(cmd *cobra.Command, args []string) error {
 			Summary: m.GetOverallSummaryLine(),
 		}
 
-		err = processHumiditySensors(m, snmp, &overall)
+		count, err := processHumiditySensors(m, snmp, &overall)
 		if err != nil {
 			return err
 		}
-
+		if count == 0 {
+			sc := result.PartialResult{
+				Output: "No humidity sensors found.",
+			}
+			sc.SetState(check.Unknown)
+			overall.AddSubcheck(sc)
+		}
 		check.ExitRaw(overall.GetStatus(), overall.GetOutput())
 	}
 	return nil
 }
 
-func processHumiditySensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Overall) error {
+func processHumiditySensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Overall) (int, error) {
 	sensors, err := m.GetHumiditySensors(snmp)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
+	count := 0
 	for _, sensor := range sensors {
 		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t, Percent: %.0f %s [%.0f, %.0f, %.0f, %.0f]",
 			sensor.Index, sensor.Description, sensor.GetStatus(), sensor.Online, sensor.Percent, sensor.GetUnit(),
@@ -94,6 +101,7 @@ func processHumiditySensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Ov
 			log.Debug("... skipping offline sensor")
 			continue
 		}
+
 		rc, output, pd := processHumiditySensor(&sensor)
 		sc := result.PartialResult{
 			Output: output,
@@ -103,8 +111,9 @@ func processHumiditySensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Ov
 			sc.Perfdata.Add(pd)
 		}
 		overall.AddSubcheck(sc)
+		count++
 	}
-	return nil
+	return count, nil
 }
 
 func processHumiditySensor(sensor *akcp.HumiditySensor) (int, string, *perfdata.Perfdata) {

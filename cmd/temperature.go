@@ -69,21 +69,30 @@ func runTemperatureCmd(cmd *cobra.Command, args []string) error {
 		overall := result.Overall{
 			Summary: m.GetOverallSummaryLine(),
 		}
-		err = processTemperatureSensors(m, snmp, &overall)
+		count, err := processTemperatureSensors(m, snmp, &overall)
 		if err != nil {
 			return err
 		}
+		if count == 0 {
+			sc := result.PartialResult{
+				Output: "No temperature sensors found.",
+			}
+			sc.SetState(check.Unknown)
+			overall.AddSubcheck(sc)
+		}
+
 		check.ExitRaw(overall.GetStatus(), overall.GetOutput())
 	}
 	return nil
 }
 
-func processTemperatureSensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Overall) error {
+func processTemperatureSensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Overall) (int, error) {
 	sensors, err := m.GetTemperatureSensors(snmp)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
+	count := 0
 	for _, sensor := range sensors {
 		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t, Degree: %.1f %s [%.0f, %.0f, %.0f, %.0f]",
 			sensor.Index, sensor.Description, sensor.GetStatus(), sensor.Online, sensor.Degree, sensor.GetUnit(),
@@ -102,8 +111,9 @@ func processTemperatureSensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result
 			sc.Perfdata.Add(pd)
 		}
 		overall.AddSubcheck(sc)
+		count++
 	}
-	return nil
+	return count, nil
 }
 
 func processTemperatureSensor(sensor *akcp.TemperatureData) (int, string, *perfdata.Perfdata) {

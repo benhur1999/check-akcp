@@ -70,22 +70,29 @@ func runDryContactsCmd(cmd *cobra.Command, args []string) error {
 			Summary: m.GetOverallSummaryLine(),
 		}
 
-		err = processDryContacts(m, snmp, &overall)
+		count, err := processDryContacts(m, snmp, &overall)
 		if err != nil {
 			return err
 		}
-
+		if count == 0 {
+			sc := result.PartialResult{
+				Output: "No dry contacts found.",
+			}
+			sc.SetState(check.Unknown)
+			overall.AddSubcheck(sc)
+		}
 		check.ExitRaw(overall.GetStatus(), overall.GetOutput())
 	}
 	return nil
 }
 
-func processDryContacts(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Overall) error {
+func processDryContacts(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Overall) (int, error) {
 	contacts, err := m.GetDryContacts(snmp)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
+	count := 0
 	for _, contact := range contacts {
 		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t IsOutput: %t, NormalState: %s",
 			contact.Index, contact.Description, contact.GetStatus(), contact.Online, contact.IsOutput(), contact.GetNormalState())
@@ -98,7 +105,7 @@ func processDryContacts(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Overal
 			log.Debug("... skipping output dry contact")
 			continue
 		}
-
+		count++
 		rc, output, pd := processDryContact(&contact)
 		sc := result.PartialResult{
 			Output: output,
@@ -109,7 +116,7 @@ func processDryContacts(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Overal
 		}
 		overall.AddSubcheck(sc)
 	}
-	return nil
+	return count, nil
 }
 
 func processDryContact(contact *akcp.DryContact) (int, string, *perfdata.Perfdata) {
