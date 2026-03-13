@@ -92,6 +92,14 @@ func processDryContacts(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Overal
 		return 0, err
 	}
 
+	if config.IncludeVirtual {
+		vcontacts, err := m.GetVirtualDryContacts(snmp)
+		if err != nil {
+			return 0, err
+		}
+		contacts = append(contacts, vcontacts...)
+	}
+
 	count := 0
 	for _, contact := range contacts {
 		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t IsOutput: %t, NormalState: %s",

@@ -28,7 +28,7 @@ const (
 	sensorProbeDegreeTypeCelsius    int64 = 1
 )
 
-func (m *SensorProbe) GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]akcp.TemperatureData, error) {
+func (m *SensorProbe) GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]akcp.TemperatureSensor, error) {
 	table, err := snmputil.FetchTable(snmp, sensorProbeTempTable, []string{
 		sensorProbeTempDescription,
 		sensorProbeTempDegree,
@@ -45,7 +45,7 @@ func (m *SensorProbe) GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]akcp.Tempera
 		return nil, err
 	}
 
-	var result []akcp.TemperatureData
+	var result []akcp.TemperatureSensor
 	for _, row := range table {
 		desc, _ := row.GetAsString(sensorProbeTempDescription)
 		if desc == "" {
@@ -81,23 +81,23 @@ func (m *SensorProbe) GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]akcp.Tempera
 			s = akcp.StatusNoStatus
 		}
 
-		result = append(result, akcp.TemperatureData{
+		result = append(result, akcp.TemperatureSensor{
 			Index:        row.Index,
 			Description:  desc,
 			Degree:       degree,
 			Unit:         unit,
 			Status:       s,
 			Online:       (online == sensorProbeTempIsOnline),
-			LowCritical:  lowCritical,
-			LowWarning:   lowWarning,
-			HighWarning:  highWarning,
-			HighCritical: highCritical,
+			LowCritical:  &lowCritical,
+			LowWarning:   &lowWarning,
+			HighWarning:  &highWarning,
+			HighCritical: &highCritical,
 		})
 	}
 	return result, nil
 }
 
-func (m *SensorProbe) GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort string) (*akcp.TemperatureData, error) {
+func (m *SensorProbe) GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort string) (*akcp.TemperatureSensor, error) {
 	result, err := snmp.Get([]string{
 		snmputil.AppendOid(sensorProbeTempDescription, sensorPort),
 		snmputil.AppendOid(sensorProbeTempDegree, sensorPort),
@@ -154,16 +154,16 @@ func (m *SensorProbe) GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort strin
 		s = akcp.StatusNoStatus
 	}
 
-	return &akcp.TemperatureData{
+	return &akcp.TemperatureSensor{
 		Index:        sensorPort,
 		Description:  desc,
 		Degree:       degree,
 		Unit:         unit,
 		Status:       s,
 		Online:       (online == sensorProbeTempIsOnline),
-		LowCritical:  lowCritical,
-		LowWarning:   lowWarning,
-		HighWarning:  highWarning,
-		HighCritical: highCritical,
+		LowCritical:  &lowCritical,
+		LowWarning:   &lowWarning,
+		HighWarning:  &highWarning,
+		HighCritical: &highCritical,
 	}, nil
 }

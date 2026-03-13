@@ -51,6 +51,7 @@ type Config struct {
 	Debug                int
 	Perfdata             bool
 	Model                ConfigModel
+	IncludeVirtual       bool
 }
 
 var config Config = Config{

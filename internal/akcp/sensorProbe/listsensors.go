@@ -5,7 +5,7 @@ import (
 	"github.com/gosnmp/gosnmp"
 )
 
-func (m *SensorProbe) ListSensors(snmp *gosnmp.GoSNMP) ([]akcp.Sensor, error) {
+func (m *SensorProbe) ListSensors(snmp *gosnmp.GoSNMP, includeVirtual bool) ([]akcp.Sensor, error) {
 	var result []akcp.Sensor
 
 	tsensors, err := m.GetTemperatureSensors(snmp)
@@ -42,6 +42,7 @@ func (m *SensorProbe) ListSensors(snmp *gosnmp.GoSNMP) ([]akcp.Sensor, error) {
 				Index:       tsensor.Index,
 				SensorType:  t,
 				Description: tsensor.Description,
+				Virtual:     false,
 			})
 		}
 	}
@@ -55,6 +56,7 @@ func (m *SensorProbe) ListSensors(snmp *gosnmp.GoSNMP) ([]akcp.Sensor, error) {
 				Index:       sensor.Index,
 				SensorType:  akcp.SensorTypeHumidityDual,
 				Description: sensor.Description,
+				Virtual:     false,
 			})
 		}
 	}
@@ -68,6 +70,7 @@ func (m *SensorProbe) ListSensors(snmp *gosnmp.GoSNMP) ([]akcp.Sensor, error) {
 				Index:       dcontact.Index,
 				SensorType:  akcp.SensorTypeDryIn,
 				Description: dcontact.Description,
+				Virtual:     false,
 			})
 		}
 	}

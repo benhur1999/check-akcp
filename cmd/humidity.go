@@ -8,6 +8,7 @@ import (
 	"github.com/NETWAYS/go-check/result"
 	"github.com/benhur1999/check-akcp/internal/akcp"
 	"github.com/benhur1999/check-akcp/internal/akcp/akcputil"
+	"github.com/benhur1999/check-akcp/internal/utils"
 	"github.com/gosnmp/gosnmp"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -92,11 +93,20 @@ func processHumiditySensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Ov
 		return 0, err
 	}
 
+	if config.IncludeVirtual {
+		vsensors, err := m.GetVirtualHumiditySensors(snmp)
+		if err != nil {
+			return 0, err
+		}
+		sensors = append(sensors, vsensors...)
+	}
+
 	count := 0
 	for _, sensor := range sensors {
-		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t, Percent: %.0f %s [%.0f, %.0f, %.0f, %.0f]",
+		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t, Percent: %.0f %s [%s, %s, %s, %s]",
 			sensor.Index, sensor.Description, sensor.GetStatus(), sensor.Online, sensor.Percent, sensor.GetUnit(),
-			sensor.LowCritical, sensor.LowWarning, sensor.HighWarning, sensor.HighCritical)
+			utils.FormatFloat(sensor.LowCritical), utils.FormatFloat(sensor.LowWarning),
+			utils.FormatFloat(sensor.HighWarning), utils.FormatFloat(sensor.HighCritical))
 		if !sensor.Online {
 			log.Debug("... skipping offline sensor")
 			continue
@@ -146,8 +156,8 @@ func processHumiditySensor(sensor *akcp.HumiditySensor) (int, string, *perfdata.
 				Label: sensor.Description,
 				Value: sensor.Percent,
 				Uom:   sensor.GetUnit(),
-				Warn:  &check.Threshold{Lower: sensor.LowWarning, Upper: sensor.HighWarning},
-				Crit:  &check.Threshold{Lower: sensor.LowCritical, Upper: sensor.HighCritical},
+				Warn:  utils.MakeThreashold(sensor.LowWarning, sensor.HighWarning),
+				Crit:  utils.MakeThreashold(sensor.LowCritical, sensor.HighCritical),
 			}
 		}
 	}

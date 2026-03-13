@@ -26,7 +26,7 @@ const (
 	sensorProbePlusTempOnlineIsOnline = 1
 )
 
-func (m *SensorProbePlus) GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]akcp.TemperatureData, error) {
+func (m *SensorProbePlus) GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]akcp.TemperatureSensor, error) {
 	table, err := snmputil.FetchTable(snmp, sensorProbePlusTempTable, []string{
 		sensorProbePlusTempIndex,
 		sensorProbePlusTempDescription,
@@ -44,7 +44,7 @@ func (m *SensorProbePlus) GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]akcp.Tem
 		return nil, err
 	}
 
-	var result []akcp.TemperatureData
+	var result []akcp.TemperatureSensor
 	for _, row := range table {
 		idx, _ := row.GetAsString(sensorProbePlusTempIndex)
 		desc, _ := row.GetAsString(sensorProbePlusTempDescription)
@@ -62,23 +62,22 @@ func (m *SensorProbePlus) GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]akcp.Tem
 		}
 		status, _ := row.GetAsInt64(sensorProbePlusTempStatus)
 		online, _ := row.GetAsInt64(sensorProbePlusTempOnline)
-		lowCritical, _ := row.GetAsFloat64(sensorProbePlusTempLowCritical)
-		lowWarning, _ := row.GetAsFloat64(sensorProbePlusTempLowWarning)
-		highWarning, _ := row.GetAsFloat64(sensorProbePlusTempHighWarning)
-		highCritical, _ := row.GetAsFloat64(sensorProbePlusTempHighCritical)
-		degreeRaw, found := row.GetAsFloat64(sensorProbePlusTempDegreeRaw)
-		if found {
+		lowCritical := foo(row, sensorProbePlusTempLowCritical)
+		lowWarning := foo(row, sensorProbePlusTempLowWarning)
+		highWarning := foo(row, sensorProbePlusTempHighWarning)
+		highCritical := foo(row, sensorProbePlusTempHighCritical)
+		if degreeRaw, ok := row.GetAsFloat64(sensorProbePlusTempDegreeRaw); ok {
 			degree = degreeRaw / 10
 		}
-		result = append(result, akcp.TemperatureData{
+		result = append(result, akcp.TemperatureSensor{
 			Index:        idx,
 			Description:  desc,
 			Degree:       degree,
 			Unit:         unit,
-			LowCritical:  lowCritical / 10,
-			LowWarning:   lowWarning / 10,
-			HighWarning:  highWarning / 10,
-			HighCritical: highCritical / 10,
+			LowCritical:  lowCritical,
+			LowWarning:   lowWarning,
+			HighWarning:  highWarning,
+			HighCritical: highCritical,
 			Status:       akcp.SensorStatus(status),
 			Online:       (online == sensorProbePlusTempOnlineIsOnline),
 		})
@@ -86,7 +85,25 @@ func (m *SensorProbePlus) GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]akcp.Tem
 	return result, nil
 }
 
-func (m *SensorProbePlus) GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort string) (*akcp.TemperatureData, error) {
+func foo(row *snmputil.Entry, oid string) *float64 {
+	if value, ok := row.GetAsFloat64(oid); ok {
+		value = value / 10
+		return &value
+	} else {
+		return nil
+	}
+}
+
+func foo2(pdu *gosnmp.SnmpPDU) *float64 {
+	if value, ok := snmputil.GetAsFloat64(pdu); ok {
+		value = value / 10
+		return &value
+	} else {
+		return nil
+	}
+}
+
+func (m *SensorProbePlus) GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort string) (*akcp.TemperatureSensor, error) {
 	result, err := snmp.Get([]string{
 		snmputil.AppendOid(sensorProbePlusTempIndex, sensorPort),
 		snmputil.AppendOid(sensorProbePlusTempDescription, sensorPort),
@@ -135,24 +152,23 @@ func (m *SensorProbePlus) GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort s
 
 	status, _ := snmputil.GetAsInt64(&result.Variables[5])
 	online, _ := snmputil.GetAsInt64(&result.Variables[6])
-	lowCritical, _ := snmputil.GetAsFloat64(&result.Variables[7])
-	lowWarning, _ := snmputil.GetAsFloat64(&result.Variables[8])
-	highWarning, _ := snmputil.GetAsFloat64(&result.Variables[9])
-	highCritical, _ := snmputil.GetAsFloat64(&result.Variables[10])
-	degreeRaw, found := snmputil.GetAsFloat64(&result.Variables[11])
-	if found {
+	lowCritical := foo2(&result.Variables[7])
+	lowWarning := foo2(&result.Variables[8])
+	highWarning := foo2(&result.Variables[9])
+	highCritical := foo2(&result.Variables[10])
+	if degreeRaw, ok := snmputil.GetAsFloat64(&result.Variables[11]); ok {
 		degree = degreeRaw / 10
 	}
 
-	return &akcp.TemperatureData{
+	return &akcp.TemperatureSensor{
 		Index:        idx,
 		Description:  desc,
 		Degree:       degree,
 		Unit:         unit,
-		LowCritical:  lowCritical / 10,
-		LowWarning:   lowWarning / 10,
-		HighWarning:  highWarning / 10,
-		HighCritical: highCritical / 10,
+		LowCritical:  lowCritical,
+		LowWarning:   lowWarning,
+		HighWarning:  highWarning,
+		HighCritical: highCritical,
 		Status:       akcp.SensorStatus(status),
 		Online:       (online == sensorProbePlusTempOnlineIsOnline),
 	}, nil

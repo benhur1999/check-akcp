@@ -86,5 +86,6 @@ func init() {
 	pfs.IntVarP(&config.Timeout, "timeout", "t", 30, "Abort the check after n seconds")
 	pfs.VarP(enumflag.New(&config.Model, "model", ConfigModelIds, enumflag.EnumCaseInsensitive), "model", "M",
 		"Model [auto, sensorProbe, sensorProbePlus]")
+	pfs.BoolVar(&config.IncludeVirtual, "virtual", false, "Include virtual sensors (only sensorProbe+ models)")
 	rootCmd.Flags().SortFlags = false
 }

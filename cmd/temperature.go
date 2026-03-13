@@ -8,6 +8,7 @@ import (
 	"github.com/NETWAYS/go-check/result"
 	"github.com/benhur1999/check-akcp/internal/akcp"
 	"github.com/benhur1999/check-akcp/internal/akcp/akcputil"
+	"github.com/benhur1999/check-akcp/internal/utils"
 	"github.com/gosnmp/gosnmp"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -92,11 +93,20 @@ func processTemperatureSensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result
 		return 0, err
 	}
 
+	if config.IncludeVirtual {
+		vsensors, err := m.GetVirtualTemperatureSensors(snmp)
+		if err != nil {
+			return 0, err
+		}
+		sensors = append(sensors, vsensors...)
+	}
+
 	count := 0
 	for _, sensor := range sensors {
-		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t, Degree: %.1f %s [%.0f, %.0f, %.0f, %.0f]",
+		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t, Degree: %.1f %s [%s, %s, %s, %s]",
 			sensor.Index, sensor.Description, sensor.GetStatus(), sensor.Online, sensor.Degree, sensor.GetUnit(),
-			sensor.LowCritical, sensor.LowWarning, sensor.HighWarning, sensor.HighCritical)
+			utils.FormatFloat(sensor.LowCritical), utils.FormatFloat(sensor.LowWarning),
+			utils.FormatFloat(sensor.HighWarning), utils.FormatFloat(sensor.HighCritical))
 		if !sensor.Online {
 			log.Debug("... skipping offline sensor")
 			continue
@@ -116,7 +126,7 @@ func processTemperatureSensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result
 	return count, nil
 }
 
-func processTemperatureSensor(sensor *akcp.TemperatureData) (int, string, *perfdata.Perfdata) {
+func processTemperatureSensor(sensor *akcp.TemperatureSensor) (int, string, *perfdata.Perfdata) {
 	var add_pd bool = false
 	var rc int = check.Unknown
 	var output string = ""
@@ -146,8 +156,8 @@ func processTemperatureSensor(sensor *akcp.TemperatureData) (int, string, *perfd
 				Label: sensor.Description,
 				Value: sensor.Degree,
 				Uom:   sensor.GetUnit(),
-				Warn:  &check.Threshold{Lower: sensor.LowWarning, Upper: sensor.HighWarning},
-				Crit:  &check.Threshold{Lower: sensor.LowCritical, Upper: sensor.HighCritical},
+				Warn:  utils.MakeThreashold(sensor.LowWarning, sensor.HighWarning),
+				Crit:  utils.MakeThreashold(sensor.LowCritical, sensor.HighCritical),
 			}
 		}
 	}

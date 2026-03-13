@@ -33,20 +33,20 @@ const (
 	TemperatureUnitFahrenheit
 )
 
-type TemperatureData struct {
+type TemperatureSensor struct {
 	Index        string
 	Description  string
 	Degree       float64
 	Unit         TemperatureUnit
 	Status       SensorStatus
 	Online       bool
-	LowCritical  float64
-	LowWarning   float64
-	HighWarning  float64
-	HighCritical float64
+	LowCritical  *float64
+	LowWarning   *float64
+	HighWarning  *float64
+	HighCritical *float64
 }
 
-func (d *TemperatureData) GetUnit() string {
+func (d *TemperatureSensor) GetUnit() string {
 	switch d.Unit {
 	case TemperatureUnitCelsius:
 		return "C"
@@ -57,7 +57,7 @@ func (d *TemperatureData) GetUnit() string {
 	}
 }
 
-func (d *TemperatureData) GetStatus() string {
+func (d *TemperatureSensor) GetStatus() string {
 	return statusStrings[d.Status]
 }
 
@@ -74,10 +74,10 @@ type HumiditySensor struct {
 	Unit         HumidityUnit
 	Status       SensorStatus
 	Online       bool
-	LowCritical  float64
-	LowWarning   float64
-	HighWarning  float64
-	HighCritical float64
+	LowCritical  *float64
+	LowWarning   *float64
+	HighWarning  *float64
+	HighCritical *float64
 }
 
 func (d *HumiditySensor) GetUnit() string {
@@ -187,12 +187,15 @@ const (
 	SensorTypeTemperatureDual SensorType = 3
 	SensorTypeDryInOut        SensorType = 7
 	SensorTypeDryIn           SensorType = 8
+	SensorTypeVirtual         SensorType = 129
+	SensorTypeHumidity        SensorType = 256
 )
 
 type Sensor struct {
 	Index       string
 	SensorType  SensorType
 	Description string
+	Virtual     bool
 }
 
 func (s *Sensor) GetType() string {
@@ -207,15 +210,21 @@ func (s *Sensor) GetType() string {
 		return "Dry-Contact (in/out)"
 	case SensorTypeDryIn:
 		return "Dry-Contact (in)"
+	case SensorTypeVirtual:
+		return "Virtual"
+	case SensorTypeHumidity:
+		return "Humidity"
 	default:
 		return "Unsupported"
 	}
 }
 
-func IsSensorSupported(sensorType SensorType) bool {
+func IsSensorSupported(sensorType SensorType, virtual bool) bool {
 	switch sensorType {
 	case SensorTypeTemperature, SensorTypeTemperatureDual, SensorTypeHumidityDual, SensorTypeDryInOut, SensorTypeDryIn:
 		return true
+	case SensorTypeVirtual:
+		return virtual
 	default:
 		return false
 	}
@@ -227,13 +236,16 @@ type Akcp interface {
 	GetLocation() string
 	GetDescription() string
 	GetOverallSummaryLine() string
-	GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]TemperatureData, error)
-	GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort string) (*TemperatureData, error)
+	GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]TemperatureSensor, error)
+	GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort string) (*TemperatureSensor, error)
 	GetHumiditySensors(snmp *gosnmp.GoSNMP) ([]HumiditySensor, error)
 	GetHumiditySensor(snmp *gosnmp.GoSNMP, sensorPort string) (*HumiditySensor, error)
 	GetDryContacts(snmp *gosnmp.GoSNMP) ([]DryContact, error)
 	GetDryContact(snmp *gosnmp.GoSNMP, sensorPort string) (*DryContact, error)
-	ListSensors(snmp *gosnmp.GoSNMP) ([]Sensor, error)
+	ListSensors(snmp *gosnmp.GoSNMP, includeVirtual bool) ([]Sensor, error)
+	GetVirtualTemperatureSensors(snmp *gosnmp.GoSNMP) ([]TemperatureSensor, error)
+	GetVirtualHumiditySensors(snmp *gosnmp.GoSNMP) ([]HumiditySensor, error)
+	GetVirtualDryContacts(snmp *gosnmp.GoSNMP) ([]DryContact, error)
 	ValidatePort(sensorPort string) bool
 }
 
