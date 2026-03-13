@@ -156,7 +156,7 @@ func processTemperatureSensor(sensor *akcp.TemperatureSensor) (int, string, *per
 			pd = &perfdata.Perfdata{
 				Label: sensor.Description,
 				Value: sensor.Degree,
-				Uom:   sensor.GetUnit(),
+				Uom:   "",
 				Warn:  utils.MakeThreashold(sensor.LowWarning, sensor.HighWarning),
 				Crit:  utils.MakeThreashold(sensor.LowCritical, sensor.HighCritical),
 			}

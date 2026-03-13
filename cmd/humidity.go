@@ -156,7 +156,7 @@ func processHumiditySensor(sensor *akcp.HumiditySensor) (int, string, *perfdata.
 			pd = &perfdata.Perfdata{
 				Label: sensor.Description,
 				Value: sensor.Percent,
-				Uom:   sensor.GetUnit(),
+				Uom:   "",
 				Warn:  utils.MakeThreashold(sensor.LowWarning, sensor.HighWarning),
 				Crit:  utils.MakeThreashold(sensor.LowCritical, sensor.HighCritical),
 			}
