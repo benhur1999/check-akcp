@@ -59,7 +59,7 @@ func (m *SensorProbePlus) GetDryContacts(snmp *gosnmp.GoSNMP) ([]akcp.DryContact
 			Direction:           akcp.DryContactDirection(direction),
 			NormalState:         akcp.DryContactNormalState(normal_state),
 			CriticalDescription: critical_decr,
-			NormalDescritpion:   normal_decr,
+			NormalDescription:   normal_decr,
 		})
 	}
 	return result, nil
@@ -112,6 +112,6 @@ func (m *SensorProbePlus) GetDryContact(snmp *gosnmp.GoSNMP, sensorPort string) 
 		Direction:           akcp.DryContactDirection(direction),
 		NormalState:         akcp.DryContactNormalState(normal_state),
 		CriticalDescription: critical_decr,
-		NormalDescritpion:   normal_decr,
+		NormalDescription:   normal_decr,
 	}, nil
 }

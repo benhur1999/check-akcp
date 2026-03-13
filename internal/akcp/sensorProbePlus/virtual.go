@@ -143,7 +143,7 @@ func (m *SensorProbePlus) GetVirtualDryContacts(snmp *gosnmp.GoSNMP) ([]akcp.Dry
 			Status:              akcp.DryContactStatus(status),
 			Online:              true,
 			CriticalDescription: critical_desc,
-			NormalDescritpion:   normal_desc,
+			NormalDescription:   normal_desc,
 		})
 	}
 	return result, nil

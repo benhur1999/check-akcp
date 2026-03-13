@@ -146,7 +146,7 @@ type DryContact struct {
 	Direction           DryContactDirection
 	NormalState         DryContactNormalState
 	CriticalDescription string
-	NormalDescritpion   string
+	NormalDescription   string
 }
 
 func (d *DryContact) GetStatus() string {
@@ -160,7 +160,7 @@ func (d *DryContact) IsOutput() bool {
 func (d *DryContact) GetStateDescription() string {
 	switch d.Status {
 	case DryContactStatusNormal:
-		return d.NormalDescritpion
+		return d.NormalDescription
 	case DryContactStatusHighCritical, DryContactStatusLowCritical:
 		return d.CriticalDescription
 	default:
