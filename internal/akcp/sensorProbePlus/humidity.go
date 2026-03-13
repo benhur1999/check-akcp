@@ -44,7 +44,7 @@ func (m *SensorProbePlus) GetHumiditySensors(snmp *gosnmp.GoSNMP) ([]akcp.Humidi
 
 	var result []akcp.HumiditySensor
 	for _, row := range table {
-		idx, _ := row.GetAsString(sensorProbePlusHumIndex)
+		port, _ := row.GetAsString(sensorProbePlusHumIndex)
 		desc, _ := row.GetAsString(sensorProbePlusHumDescription)
 		percent, found := row.GetAsFloat64(sensorProbePlusHumPercent)
 		if !found {
@@ -63,7 +63,7 @@ func (m *SensorProbePlus) GetHumiditySensors(snmp *gosnmp.GoSNMP) ([]akcp.Humidi
 		highWarning, _ := row.GetAsFloat64(sensorProbePlusHumHighWarning)
 		highCritical, _ := row.GetAsFloat64(sensorProbePlusHumHighCritical)
 		result = append(result, akcp.HumiditySensor{
-			Port:         idx,
+			Port:         port,
 			Description:  desc,
 			Percent:      percent,
 			Unit:         unit,

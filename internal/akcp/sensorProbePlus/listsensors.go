@@ -33,14 +33,14 @@ func (m *SensorProbePlus) ListSensors(snmp *gosnmp.GoSNMP, includeVirtual bool) 
 
 	var result []akcp.Sensor
 	for _, row := range table {
-		idx, _ := row.GetAsString(sensorProbePlusCommonTableIndex)
+		port, _ := row.GetAsString(sensorProbePlusCommonTableIndex)
 		desc, _ := row.GetAsString(sensorProbePlusCommonTableDescription)
 		st, _ := row.GetAsInt64(sensorProbePlusCommonTableType)
 		sensor_type := akcp.SensorType(st)
 		unit, _ := row.GetAsString(sensorProbePlusCommonTableUnit)
 		go_offline, _ := row.GetAsInt64(sensorProbePlusCommonTableGoOffline)
 
-		log.Debugf("Port: %s, Type: %d, Description: %s, Unit: %s", idx, sensor_type, desc, unit)
+		log.Debugf("Port: %s, Type: %d, Description: %s, Unit: %s", port, sensor_type, desc, unit)
 		if !akcp.IsSensorSupported(sensor_type, includeVirtual) {
 			continue
 		}
@@ -63,7 +63,7 @@ func (m *SensorProbePlus) ListSensors(snmp *gosnmp.GoSNMP, includeVirtual bool) 
 			}
 		}
 		result = append(result, akcp.Sensor{
-			Port:        idx,
+			Port:        port,
 			Description: desc,
 			SensorType:  sensor_type,
 			Virtual:     virtual,

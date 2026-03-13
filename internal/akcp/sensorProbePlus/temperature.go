@@ -122,7 +122,7 @@ func (m *SensorProbePlus) GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort s
 		return nil, fmt.Errorf("SNMP failed: %s", err)
 	}
 
-	idx, found := snmputil.GetAsString(&result.Variables[0])
+	port, found := snmputil.GetAsString(&result.Variables[0])
 	if !found {
 		return nil, nil
 	}
@@ -161,7 +161,7 @@ func (m *SensorProbePlus) GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort s
 	}
 
 	return &akcp.TemperatureSensor{
-		Port:         idx,
+		Port:         port,
 		Description:  desc,
 		Degree:       degree,
 		Unit:         unit,

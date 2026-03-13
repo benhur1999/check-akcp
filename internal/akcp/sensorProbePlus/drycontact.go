@@ -82,7 +82,7 @@ func (m *SensorProbePlus) GetDryContact(snmp *gosnmp.GoSNMP, sensorPort string) 
 		return nil, fmt.Errorf("SNMP failed: %s", err)
 	}
 
-	idx, found := snmputil.GetAsString(&result.Variables[0])
+	port, found := snmputil.GetAsString(&result.Variables[0])
 	if !found {
 		return nil, nil
 	}
@@ -104,7 +104,7 @@ func (m *SensorProbePlus) GetDryContact(snmp *gosnmp.GoSNMP, sensorPort string) 
 	critical_decr, _ := snmputil.GetAsString(&result.Variables[8])
 	normal_decr, _ := snmputil.GetAsString(&result.Variables[9])
 	return &akcp.DryContact{
-		Port:                idx,
+		Port:                port,
 		Description:         desc,
 		Type:                akcp.DryContactType(t),
 		Status:              akcp.DryContactStatus(status),
