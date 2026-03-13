@@ -1,6 +1,7 @@
 package sensorProbePlus
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/benhur1999/check-akcp/internal/akcp"
@@ -12,9 +13,12 @@ func (m *SensorProbePlus) GetVirtualTemperatureSensors(snmp *gosnmp.GoSNMP) ([]a
 	if err != nil {
 		return nil, err
 	}
+	if table == nil {
+		return nil, fmt.Errorf("internal error: table == nil")
+	}
 
 	var result []akcp.TemperatureSensor
-	for _, row := range table {
+	for _, row := range *table {
 		st, _ := row.GetAsInt64(sensorProbePlusCommonTableType)
 		sensor_type := akcp.SensorType(st)
 
@@ -57,8 +61,12 @@ func (m *SensorProbePlus) GetVirtualHumiditySensors(snmp *gosnmp.GoSNMP) ([]akcp
 	if err != nil {
 		return nil, err
 	}
+	if table == nil {
+		return nil, fmt.Errorf("internal error: table == nil")
+	}
+
 	var result []akcp.HumiditySensor
-	for _, row := range table {
+	for _, row := range *table {
 		st, _ := row.GetAsInt64(sensorProbePlusCommonTableType)
 		sensor_type := akcp.SensorType(st)
 
@@ -99,8 +107,12 @@ func (m *SensorProbePlus) GetVirtualDryContacts(snmp *gosnmp.GoSNMP) ([]akcp.Dry
 	if err != nil {
 		return nil, err
 	}
+	if table == nil {
+		return nil, fmt.Errorf("internal error: table == nil")
+	}
+
 	var result []akcp.DryContact
-	for _, row := range table {
+	for _, row := range *table {
 		st, _ := row.GetAsInt64(sensorProbePlusCommonTableType)
 		sensor_type := akcp.SensorType(st)
 
@@ -135,5 +147,4 @@ func (m *SensorProbePlus) GetVirtualDryContacts(snmp *gosnmp.GoSNMP) ([]akcp.Dry
 		})
 	}
 	return result, nil
-
 }

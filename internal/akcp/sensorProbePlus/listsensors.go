@@ -1,6 +1,7 @@
 package sensorProbePlus
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/benhur1999/check-akcp/internal/akcp"
@@ -30,9 +31,12 @@ func (m *SensorProbePlus) ListSensors(snmp *gosnmp.GoSNMP, includeVirtual bool) 
 	if err != nil {
 		return nil, err
 	}
+	if table == nil {
+		return nil, fmt.Errorf("internal error: table == nil")
+	}
 
 	var result []akcp.Sensor
-	for _, row := range table {
+	for _, row := range *table {
 		port, _ := row.GetAsString(sensorProbePlusCommonTableIndex)
 		desc, _ := row.GetAsString(sensorProbePlusCommonTableDescription)
 		st, _ := row.GetAsInt64(sensorProbePlusCommonTableType)
@@ -72,21 +76,26 @@ func (m *SensorProbePlus) ListSensors(snmp *gosnmp.GoSNMP, includeVirtual bool) 
 	return result, nil
 }
 
-func fetchCommonSensorTable(snmp *gosnmp.GoSNMP) (snmputil.Table, error) {
-	table, err := snmputil.FetchTable(snmp, sensorProbePlusCommonTable, []string{
-		sensorProbePlusCommonTableIndex,
-		sensorProbePlusCommonTableDescription,
-		sensorProbePlusCommonTableType,
-		sensorProbePlusCommonTableUnit,
-		sensorProbePlusCommonTableValue,
-		sensorProbePlusCommonTableStatus,
-		sensorProbePlusCommonTableRaw,
-		sensorProbePlusCommonTableHighCriticalDescription,
-		sensorProbePlusCommonTableNormalDescription,
-		sensorProbePlusCommonTableGoOffline,
-	})
-	if err != nil {
-		return nil, err
+var commonSensorTableCache *snmputil.Table = nil
+
+func fetchCommonSensorTable(snmp *gosnmp.GoSNMP) (*snmputil.Table, error) {
+	if commonSensorTableCache == nil {
+		table, err := snmputil.FetchTable(snmp, sensorProbePlusCommonTable, []string{
+			sensorProbePlusCommonTableIndex,
+			sensorProbePlusCommonTableDescription,
+			sensorProbePlusCommonTableType,
+			sensorProbePlusCommonTableUnit,
+			sensorProbePlusCommonTableValue,
+			sensorProbePlusCommonTableStatus,
+			sensorProbePlusCommonTableRaw,
+			sensorProbePlusCommonTableHighCriticalDescription,
+			sensorProbePlusCommonTableNormalDescription,
+			sensorProbePlusCommonTableGoOffline,
+		})
+		if err != nil {
+			return nil, err
+		}
+		commonSensorTableCache = &table
 	}
-	return table, nil
+	return commonSensorTableCache, nil
 }
