@@ -153,9 +153,23 @@ func processDryContact(contact *akcp.DryContact) (int, string, *perfdata.Perfdat
 	if output == "" {
 		output = fmt.Sprintf("%s: %s", contact.Description, contact.GetStateDescription())
 		if add_pd && config.Perfdata {
+			var state int = 0
+			if contact.Status == akcp.DryContactStatusNormal {
+				if contact.NormalState == akcp.DryContactNormalStateOpen {
+					state = 0
+				} else {
+					state = 1
+				}
+			} else {
+				if contact.NormalState == akcp.DryContactNormalStateOpen {
+					state = 1
+				} else {
+					state = 0
+				}
+			}
 			pd = &perfdata.Perfdata{
 				Label: contact.Description,
-				Value: 0,
+				Value: state,
 			}
 		}
 	}
