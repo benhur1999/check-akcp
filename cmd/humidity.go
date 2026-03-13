@@ -54,9 +54,10 @@ func runHumidityCmd(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("No humiditiy sensor on port %s found!", sensorPort)
 		}
 
-		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t, Percent: %.0f %s [%.0f, %.0f, %.0f, %.0f]",
+		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t, Percent: %.0f %s [%s, %s, %s, %s]",
 			sensor.Port, sensor.Description, sensor.GetStatus(), sensor.Online, sensor.Percent, sensor.GetUnit(),
-			sensor.LowCritical, sensor.LowWarning, sensor.HighWarning, sensor.HighCritical)
+			utils.FormatFloat(sensor.LowCritical), utils.FormatFloat(sensor.LowWarning),
+			utils.FormatFloat(sensor.HighWarning), utils.FormatFloat(sensor.HighCritical))
 		if !sensor.Online {
 			return fmt.Errorf("Humiditiy sensor on %s is offline!", sensorPort)
 		}
