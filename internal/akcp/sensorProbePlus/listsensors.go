@@ -63,7 +63,7 @@ func (m *SensorProbePlus) ListSensors(snmp *gosnmp.GoSNMP, includeVirtual bool) 
 			}
 		}
 		result = append(result, akcp.Sensor{
-			Index:       idx,
+			Port:        idx,
 			Description: desc,
 			SensorType:  sensor_type,
 			Virtual:     virtual,

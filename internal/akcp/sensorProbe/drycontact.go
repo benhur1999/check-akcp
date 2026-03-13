@@ -55,7 +55,7 @@ func (m *SensorProbe) GetDryContacts(snmp *gosnmp.GoSNMP) ([]akcp.DryContact, er
 			t = akcp.DryContactTypeOutput
 		}
 		result = append(result, akcp.DryContact{
-			Index:               row.Index,
+			Port:                row.Index,
 			Description:         desc,
 			Type:                akcp.DryContactType(t),
 			Status:              akcp.DryContactStatus(status),
@@ -111,7 +111,7 @@ func (m *SensorProbe) GetDryContact(snmp *gosnmp.GoSNMP, sensorPort string) (*ak
 		t = akcp.DryContactTypeOutput
 	}
 	return &akcp.DryContact{
-		Index:               sensorPort,
+		Port:                sensorPort,
 		Description:         desc,
 		Type:                akcp.DryContactType(t),
 		Status:              akcp.DryContactStatus(status),

@@ -41,7 +41,7 @@ func (m *SensorProbePlus) GetVirtualTemperatureSensors(snmp *gosnmp.GoSNMP) ([]a
 		}
 
 		result = append(result, akcp.TemperatureSensor{
-			Index:       port,
+			Port:        port,
 			Description: desc,
 			Degree:      value,
 			Unit:        u,
@@ -83,7 +83,7 @@ func (m *SensorProbePlus) GetVirtualHumiditySensors(snmp *gosnmp.GoSNMP) ([]akcp
 		}
 
 		result = append(result, akcp.HumiditySensor{
-			Index:       port,
+			Port:        port,
 			Description: desc,
 			Percent:     value,
 			Unit:        u,
@@ -124,7 +124,7 @@ func (m *SensorProbePlus) GetVirtualDryContacts(snmp *gosnmp.GoSNMP) ([]akcp.Dry
 		}
 
 		result = append(result, akcp.DryContact{
-			Index:               port,
+			Port:                port,
 			Description:         desc,
 			Type:                akcp.DryContactTypeInput,
 			Direction:           u,

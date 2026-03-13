@@ -34,7 +34,7 @@ const (
 )
 
 type TemperatureSensor struct {
-	Index        string
+	Port         string
 	Description  string
 	Degree       float64
 	Unit         TemperatureUnit
@@ -68,7 +68,7 @@ const (
 )
 
 type HumiditySensor struct {
-	Index        string
+	Port         string
 	Description  string
 	Percent      float64
 	Unit         HumidityUnit
@@ -138,7 +138,7 @@ const (
 )
 
 type DryContact struct {
-	Index               string
+	Port                string
 	Description         string
 	Type                DryContactType
 	Status              DryContactStatus
@@ -192,7 +192,7 @@ const (
 )
 
 type Sensor struct {
-	Index       string
+	Port        string
 	SensorType  SensorType
 	Description string
 	Virtual     bool

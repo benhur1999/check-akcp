@@ -32,14 +32,14 @@ func (m *SensorProbe) ListSensors(snmp *gosnmp.GoSNMP, includeVirtual bool) ([]a
 			// maybe need to adjust sensor type to dual, if humidity sensor shares port with temperature sensor
 			if len(hsensors) > 0 {
 				for _, hsensor := range hsensors {
-					if tsensor.Index == hsensor.Index && hsensor.Online {
+					if tsensor.Port == hsensor.Port && hsensor.Online {
 						t = akcp.SensorTypeTemperatureDual
 						break
 					}
 				}
 			}
 			result = append(result, akcp.Sensor{
-				Index:       tsensor.Index,
+				Port:        tsensor.Port,
 				SensorType:  t,
 				Description: tsensor.Description,
 				Virtual:     false,
@@ -53,7 +53,7 @@ func (m *SensorProbe) ListSensors(snmp *gosnmp.GoSNMP, includeVirtual bool) ([]a
 				continue
 			}
 			result = append(result, akcp.Sensor{
-				Index:       sensor.Index,
+				Port:        sensor.Port,
 				SensorType:  akcp.SensorTypeHumidityDual,
 				Description: sensor.Description,
 				Virtual:     false,
@@ -67,7 +67,7 @@ func (m *SensorProbe) ListSensors(snmp *gosnmp.GoSNMP, includeVirtual bool) ([]a
 				continue
 			}
 			result = append(result, akcp.Sensor{
-				Index:       dcontact.Index,
+				Port:        dcontact.Port,
 				SensorType:  akcp.SensorTypeDryIn,
 				Description: dcontact.Description,
 				Virtual:     false,

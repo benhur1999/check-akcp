@@ -70,7 +70,7 @@ func (m *SensorProbePlus) GetTemperatureSensors(snmp *gosnmp.GoSNMP) ([]akcp.Tem
 			degree = degreeRaw / 10
 		}
 		result = append(result, akcp.TemperatureSensor{
-			Index:        idx,
+			Port:         idx,
 			Description:  desc,
 			Degree:       degree,
 			Unit:         unit,
@@ -161,7 +161,7 @@ func (m *SensorProbePlus) GetTemperatureSensor(snmp *gosnmp.GoSNMP, sensorPort s
 	}
 
 	return &akcp.TemperatureSensor{
-		Index:        idx,
+		Port:         idx,
 		Description:  desc,
 		Degree:       degree,
 		Unit:         unit,

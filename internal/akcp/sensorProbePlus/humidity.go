@@ -63,7 +63,7 @@ func (m *SensorProbePlus) GetHumiditySensors(snmp *gosnmp.GoSNMP) ([]akcp.Humidi
 		highWarning, _ := row.GetAsFloat64(sensorProbePlusHumHighWarning)
 		highCritical, _ := row.GetAsFloat64(sensorProbePlusHumHighCritical)
 		result = append(result, akcp.HumiditySensor{
-			Index:        idx,
+			Port:         idx,
 			Description:  desc,
 			Percent:      percent,
 			Unit:         unit,
@@ -131,7 +131,7 @@ func (m *SensorProbePlus) GetHumiditySensor(snmp *gosnmp.GoSNMP, sensorPort stri
 	highCritical, _ := snmputil.GetAsFloat64(&result.Variables[10])
 
 	return &akcp.HumiditySensor{
-		Index:        idx,
+		Port:         idx,
 		Description:  desc,
 		Percent:      percent,
 		Unit:         unit,

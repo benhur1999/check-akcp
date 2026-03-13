@@ -37,8 +37,8 @@ func runListSensorsCmd(cmd *cobra.Command, args []string) error {
 		col_port := 4
 		col_desc := 4
 		for _, sensor := range sensors {
-			if len(sensor.Index) > col_port {
-				col_port = len(sensor.Index)
+			if len(sensor.Port) > col_port {
+				col_port = len(sensor.Port)
 			}
 			if len(sensor.GetType()) > col_type {
 				col_type = len(sensor.GetType())
@@ -58,7 +58,7 @@ func runListSensorsCmd(cmd *cobra.Command, args []string) error {
 				if sensor.Virtual {
 					v = "Yes"
 				}
-				fmt.Printf(f_str, sensor.Index, sensor.GetType(), sensor.Description, v)
+				fmt.Printf(f_str, sensor.Port, sensor.GetType(), sensor.Description, v)
 			}
 		} else {
 			f_str := fmt.Sprintf("%%-%ds | %%-%ds | %%-%ds\n", col_port, col_type, col_desc)
@@ -66,7 +66,7 @@ func runListSensorsCmd(cmd *cobra.Command, args []string) error {
 			fmt.Printf(f_str, "Port", "Type", "Name")
 			fmt.Printf("%s+%s+%s\n", strings.Repeat("-", col_port+1), strings.Repeat("-", col_type+2), strings.Repeat("-", col_desc+2))
 			for _, sensor := range sensors {
-				fmt.Printf(f_str, sensor.Index, sensor.GetType(), sensor.Description)
+				fmt.Printf(f_str, sensor.Port, sensor.GetType(), sensor.Description)
 			}
 
 		}

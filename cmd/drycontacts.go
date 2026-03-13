@@ -53,7 +53,7 @@ func runDryContactsCmd(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("No dry contact on port %s found!", sensorPort)
 		}
 		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t IsOutput: %t, NormalState: %s",
-			contact.Index, contact.Description, contact.GetStatus(), contact.Online, contact.IsOutput(), contact.GetNormalState())
+			contact.Port, contact.Description, contact.GetStatus(), contact.Online, contact.IsOutput(), contact.GetNormalState())
 		if !contact.Online {
 			return fmt.Errorf("Dry contact on port %s is offline", sensorPort)
 		}
@@ -103,7 +103,7 @@ func processDryContacts(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Overal
 	count := 0
 	for _, contact := range contacts {
 		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t IsOutput: %t, NormalState: %s",
-			contact.Index, contact.Description, contact.GetStatus(), contact.Online, contact.IsOutput(), contact.GetNormalState())
+			contact.Port, contact.Description, contact.GetStatus(), contact.Online, contact.IsOutput(), contact.GetNormalState())
 		if !contact.Online {
 			log.Debug("... skipping offline dry contact")
 			continue

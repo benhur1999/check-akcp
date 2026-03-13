@@ -55,7 +55,7 @@ func runHumidityCmd(cmd *cobra.Command, args []string) error {
 		}
 
 		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t, Percent: %.0f %s [%.0f, %.0f, %.0f, %.0f]",
-			sensor.Index, sensor.Description, sensor.GetStatus(), sensor.Online, sensor.Percent, sensor.GetUnit(),
+			sensor.Port, sensor.Description, sensor.GetStatus(), sensor.Online, sensor.Percent, sensor.GetUnit(),
 			sensor.LowCritical, sensor.LowWarning, sensor.HighWarning, sensor.HighCritical)
 		if !sensor.Online {
 			return fmt.Errorf("Humiditiy sensor on %s is offline!", sensorPort)
@@ -104,7 +104,7 @@ func processHumiditySensors(m akcp.Akcp, snmp *gosnmp.GoSNMP, overall *result.Ov
 	count := 0
 	for _, sensor := range sensors {
 		log.Debugf("Index: %s, Description: %s, Status: %s, Online: %t, Percent: %.0f %s [%s, %s, %s, %s]",
-			sensor.Index, sensor.Description, sensor.GetStatus(), sensor.Online, sensor.Percent, sensor.GetUnit(),
+			sensor.Port, sensor.Description, sensor.GetStatus(), sensor.Online, sensor.Percent, sensor.GetUnit(),
 			utils.FormatFloat(sensor.LowCritical), utils.FormatFloat(sensor.LowWarning),
 			utils.FormatFloat(sensor.HighWarning), utils.FormatFloat(sensor.HighCritical))
 		if !sensor.Online {

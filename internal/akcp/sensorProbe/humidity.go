@@ -61,7 +61,7 @@ func (m *SensorProbe) GetHumiditySensors(snmp *gosnmp.GoSNMP) ([]akcp.HumiditySe
 		}
 
 		result = append(result, akcp.HumiditySensor{
-			Index:        row.Index,
+			Port:         row.Index,
 			Description:  desc,
 			Percent:      percent,
 			Unit:         akcp.HumidityUnitRelativeHumidity,
@@ -120,7 +120,7 @@ func (m *SensorProbe) GetHumiditySensor(snmp *gosnmp.GoSNMP, sensorPort string) 
 	}
 
 	return &akcp.HumiditySensor{
-		Index:        sensorPort,
+		Port:         sensorPort,
 		Description:  desc,
 		Percent:      percent,
 		Unit:         akcp.HumidityUnitRelativeHumidity,
