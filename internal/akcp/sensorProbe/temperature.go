@@ -16,8 +16,8 @@ const (
 	sensorProbeTempOnline           = ".1.3.6.1.4.1.3854.1.2.2.1.16.1.5"
 	sensorProbePlusTempHighWarning  = ".1.3.6.1.4.1.3854.1.2.2.1.16.1.7"
 	sensorProbePlusTempHighCritical = ".1.3.6.1.4.1.3854.1.2.2.1.16.1.8"
-	sensorProbePlusTempLowCritical  = ".1.3.6.1.4.1.3854.1.2.2.1.16.1.9"
-	sensorProbePlusTempLowWarning   = ".1.3.6.1.4.1.3854.1.2.2.1.16.1.10"
+	sensorProbePlusTempLowWarning   = ".1.3.6.1.4.1.3854.1.2.2.1.16.1.9"
+	sensorProbePlusTempLowCritical  = ".1.3.6.1.4.1.3854.1.2.2.1.16.1.10"
 	sensorProbeTempDegreeType       = ".1.3.6.1.4.1.3854.1.2.2.1.16.1.12"
 	sensorProbeTempDegreeRaw        = ".1.3.6.1.4.1.3854.1.2.2.1.16.1.14"
 )

@@ -14,10 +14,10 @@ const (
 	sensorProbeHumPercent      = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.3"
 	sensorProbeHumStatus       = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.4"
 	sensorProbeHumOnline       = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.5"
-	sensorProbeHumLowCritical  = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.7"
-	sensorProbeHumLowWarning   = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.8"
-	sensorProbeHumHighWarning  = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.9"
-	sensorProbeHumHighCritical = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.10"
+	sensorProbeHumHighWarning  = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.7"
+	sensorProbeHumHighCritical = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.8"
+	sensorProbeHumLowWarning   = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.9"
+	sensorProbeHumLowCritical  = ".1.3.6.1.4.1.3854.1.2.2.1.17.1.10"
 
 	sensorProbeHumOnlineIsOnline = 1
 )
