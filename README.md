@@ -23,8 +23,8 @@ Flags:
   -c, --community string    SNMPv1/SNMPv2c community string (default "public")
   -U, --username string     SNMPv3 username
   -N, --context string      SNMPv3 context
-  -L, --seclevel string     SNMPv3 security level [noAuthNoPriv|authNoPriv|authP                                                 riv]
-  -a, --authproto string    SNMPv3 authentication password [md5|sha] (default "s                                                 ha")
+  -L, --seclevel string     SNMPv3 security level [noAuthNoPriv|authNoPriv|authPriv]
+  -a, --authproto string    SNMPv3 authentication password [md5|sha] (default "sha")
   -A, --authpass string     SNMPv3 authentication protocol
   -x, --privproto string    SNMPv3 privacy proto [des|aes] (default "des")
   -X, --privpass string     SNMPv3 privacy password
@@ -33,7 +33,7 @@ Flags:
   -v, --verbose             Enable verbose mode
       --perf-data           Output performance data
   -t, --timeout int         Abort the check after n seconds (default 30)
-  -M, --model model         Model [auto, sensorProbe, sensorProbePlus] (default                                                  auto)
+  -M, --model model         Model [auto, sensorProbe, sensorProbePlus] (default auto)
       --virtual             Include virtual sensors (only sensorProbe+ models)
   -h, --help                help for check_akcp
 ```
