@@ -64,7 +64,7 @@ func New(snmp *gosnmp.GoSNMP, model AkcpModel) (akcp.Akcp, error) {
 	}
 
 	// reset values, if user has not changed meaningless default
-	if name != "Sys Name" {
+	if name == "Sys Name" {
 		name = ""
 	}
 	if location == "Sys Location" {
