@@ -4,7 +4,7 @@ Monitoring plugin (Icinga/Nagios compatible) to monitor AKCP sensorProbe and sen
 supports temperature, humidity and dry-contact sensors.
 
 ## Usage
----
+```
 Usage:
   check_akcp [flags]
   check_akcp [command]
@@ -36,7 +36,7 @@ Flags:
   -M, --model model         Model [auto, sensorProbe, sensorProbePlus] (default                                                  auto)
       --virtual             Include virtual sensors (only sensorProbe+ models)
   -h, --help                help for check_akcp
----
+```
 
 The plugin tries to auto-detect the model unless overriden by the command line.
 
