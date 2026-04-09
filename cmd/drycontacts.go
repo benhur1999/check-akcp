@@ -23,7 +23,7 @@ var dryContactsCmdConfig DryContactCmdConfig = DryContactCmdConfig{
 
 var dryContactsCmd = &cobra.Command{
 	Use:   "dry-contact",
-	Short: "Checks the dry contants",
+	Short: "Checks the dry contacts",
 	RunE:  runDryContactsCmd,
 }
 

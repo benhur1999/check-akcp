@@ -11,7 +11,7 @@ import (
 
 var listSensorsCmd = &cobra.Command{
 	Use:   "list-sensors",
-	Short: "List all sensors and dry contants",
+	Short: "List all sensors and dry contacts",
 	RunE:  runListSensorsCmd,
 }
 
