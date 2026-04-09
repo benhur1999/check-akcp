@@ -17,6 +17,6 @@ require (
 )
 
 require (
-	github.com/thediveo/enumflag/v2 v2.1.0
-	golang.org/x/sys v0.42.0 // indirect
+	github.com/thediveo/enumflag/v2 v2.2.0
+	golang.org/x/sys v0.43.0 // indirect
 )
