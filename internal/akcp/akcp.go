@@ -1,6 +1,8 @@
 package akcp
 
 import (
+	"fmt"
+
 	"github.com/gosnmp/gosnmp"
 )
 
@@ -231,7 +233,6 @@ func IsSensorSupported(sensorType SensorType, virtual bool) bool {
 }
 
 type Akcp interface {
-	GetModel() string
 	GetName() string
 	GetLocation() string
 	GetDescription() string
@@ -250,13 +251,15 @@ type Akcp interface {
 }
 
 type AkcpBase struct {
+	model       string
 	description string
 	name        string
 	location    string
 }
 
-func NewAkcpBase(description string, name string, location string) AkcpBase {
+func NewAkcpBase(model string, description string, name string, location string) AkcpBase {
 	return AkcpBase{
+		model:       model,
 		description: description,
 		name:        name,
 		location:    location,
@@ -273,4 +276,17 @@ func (m *AkcpBase) GetName() string {
 
 func (m *AkcpBase) GetLocation() string {
 	return m.location
+}
+
+func (m *AkcpBase) GetOverallSummaryLine() string {
+	var s string = ""
+	if len(m.name) > 0 {
+		s = fmt.Sprintf("%s %s", m.model, m.name)
+	} else {
+		s = m.model
+	}
+	if len(m.location) > 0 {
+		s = fmt.Sprintf("%s at %s", s, m.location)
+	}
+	return fmt.Sprintf("%s (%s)", s, m.description)
 }
