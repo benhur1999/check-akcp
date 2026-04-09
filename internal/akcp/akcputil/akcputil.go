@@ -63,6 +63,14 @@ func New(snmp *gosnmp.GoSNMP, model AkcpModel) (akcp.Akcp, error) {
 		}
 	}
 
+	// reset values, if user has not changed meaningless default
+	if name != "Sys Name" {
+		name = ""
+	}
+	if location == "Sys Location" {
+		location = ""
+	}
+
 	switch model {
 	case AkcpModelSensorProbe:
 		return sensorProbe.New(description, name, location), nil
